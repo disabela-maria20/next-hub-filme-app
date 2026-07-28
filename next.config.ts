@@ -1,7 +1,22 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "export",
+  distDir: "build",
+  trailingSlash: true,
+
+  basePath: "/acampamentomiasma",
+  assetPrefix: "/acampamentomiasma",
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/acampamentomiasma",
+        permanent: true, // ou false se for temporário
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
