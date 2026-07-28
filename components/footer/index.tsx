@@ -49,7 +49,9 @@ export default function Footer() {
       </div>
 
       <div className="flex flex-col items-center justify-center gap-5 md:flex-row">
-        <p className="text-center text-sm md:text-left">{config.rodape.copy}</p>
+        <p className="text-center text-[14px] md:text-left">
+          {config.rodape.copy}
+        </p>
 
         {/* Mobile */}
         <div className="w-full overflow-hidden md:hidden">
