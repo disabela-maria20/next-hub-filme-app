@@ -1,0 +1,12 @@
+{
+  "seo": {},
+  "code": "22744",
+  "banner": {
+    "mobile": "./img/poster-mobile.png",
+    "desktop": "./img/poster-desktop.jpg"
+  },
+  "video": {
+    "img": "./img/maxresdefault.jpg",
+    "url": "https://www.youtube.com/embed/ol6BIre1lPo?si=QwJxhW-okDl3ZhRJ"
+  }
+}
