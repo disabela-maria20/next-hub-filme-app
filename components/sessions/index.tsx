@@ -13,7 +13,7 @@ import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import React from "react";
 import Video from "../video";
-
+import config from "@/data/config.json";
 // Componente de Loading melhorado
 const LoadingSpinner = () => (
   <div className="flex flex-col items-center justify-center min-h-[200px] gap-4">
@@ -55,6 +55,40 @@ const CardLoadingSkeleton = () => (
 const removeAcentos = (texto: string) =>
   texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+// Hook personalizado para DataLayer
+const useDataLayer = () => {
+  const pushEvent = (event: any) => {
+    if (typeof window !== "undefined" && window.dataLayer) {
+      window.dataLayer.push(event);
+    } else if (typeof window !== "undefined") {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push(event);
+    }
+  };
+
+  const pushTicketingEvent = (
+    action: string,
+    label: string,
+    additionalData?: any,
+  ) => {
+    const eventData = {
+      event: action,
+      event_category: "Ticketing Event",
+      event_action: action,
+      event_label: label,
+      page_title: `${config.seo.title || "Filme"} Ticketing`,
+      property_title: config.seo.title || "Filme",
+      content_type: "microsite",
+      site_country: "BR",
+      ...additionalData,
+    };
+    pushEvent(eventData);
+    console.log("DataLayer Event:", eventData); // Para debug
+  };
+
+  return { pushEvent, pushTicketingEvent };
+};
+
 export default function ProgramacaoFiltro() {
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidadeSelecionada, setCidadeSelecionada] = useState("");
@@ -78,6 +112,9 @@ export default function ProgramacaoFiltro() {
       setLoaded(true);
     },
   });
+
+  // Inicializa o DataLayer
+  const { pushEvent, pushTicketingEvent } = useDataLayer();
 
   const { data: geoData, isLoading: isLoadingGeo } = useQuery({
     queryKey: ["geo-location"],
@@ -116,6 +153,12 @@ export default function ProgramacaoFiltro() {
 
   const handleBuscar = () => {
     if (!cidadeSelecionada) return;
+
+    // Envia evento de cidade selecionada
+    pushTicketingEvent("city", cidadeSelecionada, {
+      estado: estadoSelecionado,
+      cidade: cidadeSelecionada,
+    });
 
     setFiltro({
       estado: estadoSelecionado,
@@ -305,6 +348,25 @@ export default function ProgramacaoFiltro() {
     return cinemasPorData;
   }, [cinemasPorData, cinemaSelecionado]);
 
+  // Efeito para rastrear quando a programação é carregada
+  useEffect(() => {
+    if (programacao && filtro.cidade) {
+      // Envia evento de visualização da programação
+      pushEvent({
+        event: "programacao_view",
+        event_category: "Ticketing Event",
+        event_action: "view_programacao",
+        event_label: filtro.cidade,
+        cidade: filtro.cidade,
+        estado: filtro.estado,
+        page_title: `${config.seo.title || "Filme"} Ticketing`,
+        property_title: config.seo.title || "Filme",
+        content_type: "microsite",
+        site_country: "BR",
+      });
+    }
+  }, [programacao, filtro.cidade, filtro.estado, pushEvent]);
+
   // Loading principal da página
   if (isLoadingGeo) {
     return (
@@ -454,6 +516,10 @@ export default function ProgramacaoFiltro() {
                         onClick={() => {
                           setDataSelecionada(dataKey);
                           setCinemaSelecionado("");
+                          // Envia evento de data selecionada
+                          pushTicketingEvent("date", dataKey, {
+                            data_formatada: `${dataFormatada.diaSemana} ${dataFormatada.dia} ${dataFormatada.mes}`,
+                          });
                         }}
                         className={`cursor-pointer flex flex-col items-center justify-center min-w-[80px] px-4 py-3 rounded-lg transition ${
                           isSelected
@@ -483,7 +549,17 @@ export default function ProgramacaoFiltro() {
                 <div className="relative">
                   <select
                     value={cinemaSelecionado}
-                    onChange={(e) => setCinemaSelecionado(e.target.value)}
+                    onChange={(e) => {
+                      const valor = e.target.value;
+                      setCinemaSelecionado(valor);
+                      if (valor) {
+                        // Envia evento de filtro por cinema
+                        pushTicketingEvent("theater select", valor, {
+                          cidade: filtro.cidade,
+                          estado: filtro.estado,
+                        });
+                      }
+                    }}
                     className="w-full appearance-none rounded-lg border border-white/10 bg-[#111317] px-4 py-3 pr-10 text-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
                   >
                     <option value="">Filtrar por cinemas</option>
@@ -604,6 +680,19 @@ export default function ProgramacaoFiltro() {
                                       href={horario.URL_COMPRA}
                                       target="_blank"
                                       rel="noopener noreferrer"
+                                      onClick={() => {
+                                        // Envia evento de horário selecionado
+                                        pushTicketingEvent(
+                                          "time",
+                                          horario.HORARIO,
+                                          {
+                                            cinema: cinema.CINEMA,
+                                            sala: sala.SALA,
+                                            data: dataSelecionada,
+                                            url_compra: horario.URL_COMPRA,
+                                          },
+                                        );
+                                      }}
                                       className="rounded-lg border border-primary hover:border-primary-dark px-6 py-3 text-lg font-semibold text-primary transition hover:bg-primary-dark hover:text-white"
                                     >
                                       {formatarHorario(horario.HORARIO)}
