@@ -8,5 +8,9 @@
   "video": {
     "img": "./img/maxresdefault.jpg",
     "url": "https://www.youtube.com/embed/ol6BIre1lPo?si=QwJxhW-okDl3ZhRJ"
+  },
+  "rodape": {
+    "copy": "© 2026 FILMES DO ESTAÇÃO",
+    "bb": "./img/bb.png"
   }
 }

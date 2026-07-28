@@ -12,6 +12,45 @@ import { getGeoLocation, getGeoStateCity } from "@/services/api";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import React from "react";
+import Video from "../video";
+
+// Componente de Loading melhorado
+const LoadingSpinner = () => (
+  <div className="flex flex-col items-center justify-center min-h-[200px] gap-4">
+    <div className="flex space-x-2">
+      <div className="h-4 w-4 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]"></div>
+      <div className="h-4 w-4 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]"></div>
+      <div className="h-4 w-4 animate-bounce rounded-full bg-primary"></div>
+    </div>
+    <p className="text-gray-400 text-sm animate-pulse">Carregando...</p>
+  </div>
+);
+
+// Componente de Loading para cards
+const CardLoadingSkeleton = () => (
+  <div className="rounded-2xl border border-white/10 bg-[#111317] p-6 animate-pulse">
+    <div className="mb-5 border-b border-white/10 pb-5">
+      <div className="h-8 w-3/4 bg-gray-700 rounded mb-2"></div>
+      <div className="h-4 w-1/2 bg-gray-700 rounded"></div>
+    </div>
+    <div className="space-y-8">
+      {[1, 2].map((i) => (
+        <div key={i}>
+          <div className="mb-4 flex flex-wrap items-center gap-3">
+            <div className="h-6 w-32 bg-gray-700 rounded"></div>
+            <div className="h-6 w-16 bg-gray-700 rounded"></div>
+            <div className="h-6 w-16 bg-gray-700 rounded"></div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {[1, 2, 3].map((j) => (
+              <div key={j} className="h-12 w-20 bg-gray-700 rounded-lg"></div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 const removeAcentos = (texto: string) =>
   texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -19,15 +58,16 @@ const removeAcentos = (texto: string) =>
 export default function ProgramacaoFiltro() {
   const [estadoSelecionado, setEstadoSelecionado] = useState("");
   const [cidadeSelecionada, setCidadeSelecionada] = useState("");
+  const [cinemaSelecionado, setCinemaSelecionado] = useState("");
   const [filtro, setFiltro] = useState({
     estado: "",
     cidade: "",
   });
   const [dataSelecionada, setDataSelecionada] = useState<string | null>(null);
 
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [loaded, setLoaded] = useState(false);
-  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+  const [, setCurrentSlide] = useState(0);
+  const [, setLoaded] = useState(false);
+  const [sliderRef] = useKeenSlider<HTMLDivElement>({
     initial: 0,
     loop: false,
     slides: { perView: "auto", spacing: 20 },
@@ -39,12 +79,12 @@ export default function ProgramacaoFiltro() {
     },
   });
 
-  const { data: geoData, isLoading } = useQuery({
+  const { data: geoData, isLoading: isLoadingGeo } = useQuery({
     queryKey: ["geo-location"],
     queryFn: getGeoLocation,
   });
 
-  const { data: programacao, isFetching } = useQuery({
+  const { data: programacao, isFetching: isFetchingProgramacao } = useQuery({
     queryKey: ["programacao", filtro.estado, filtro.cidade],
     queryFn: () =>
       getGeoStateCity(
@@ -82,6 +122,7 @@ export default function ProgramacaoFiltro() {
       cidade: cidadeSelecionada,
     });
     setDataSelecionada(null);
+    setCinemaSelecionado("");
   };
 
   // Função para formatar a data
@@ -178,6 +219,21 @@ export default function ProgramacaoFiltro() {
     };
   };
 
+  // Função para formatar horário (remove os segundos)
+  const formatarHorario = (horario: string) => {
+    if (!horario) return "";
+
+    // Se tiver segundos (formato HH:MM:SS), remove os segundos
+    if (horario.includes(":")) {
+      const partes = horario.split(":");
+      if (partes.length >= 2) {
+        return `${partes[0]}:${partes[1]}`;
+      }
+    }
+
+    return horario;
+  };
+
   const datasOrdenadas = useMemo(() => {
     if (!programacao?.filme?.programacao) return [];
 
@@ -221,45 +277,75 @@ export default function ProgramacaoFiltro() {
     return diaSelecionado.CINEMAS;
   }, [programacao, dataSelecionada]);
 
-  if (isLoading) {
-    return <p>Carregando...</p>;
-  }
+  // Lista de cinemas para o select em ordem alfabética
+  const listaCinemas = useMemo(() => {
+    if (!cinemasPorData) return [];
 
-  function Arrow(props: {
-    disabled: boolean;
-    left?: boolean;
-    onClick: (e: any) => void;
-  }) {
-    const disabled = props.disabled ? " arrow--disabled" : "";
+    return Object.entries(cinemasPorData)
+      .map(([key, cinema]) => ({
+        key,
+        nome: cinema.CINEMA,
+        cidade: cinema.CIDADE,
+        estado: cinema.ESTADO,
+      }))
+      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+  }, [cinemasPorData]);
+
+  // Filtrar cinemas pelo selecionado
+  const cinemasFiltrados = useMemo(() => {
+    if (!cinemasPorData) return null;
+
+    if (cinemaSelecionado) {
+      // Se um cinema foi selecionado, mostra apenas ele
+      const cinema = cinemasPorData[cinemaSelecionado];
+      return cinema ? { [cinemaSelecionado]: cinema } : null;
+    }
+
+    // Se nenhum cinema foi selecionado, mostra todos
+    return cinemasPorData;
+  }, [cinemasPorData, cinemaSelecionado]);
+
+  // Loading principal da página
+  if (isLoadingGeo) {
     return (
-      <svg
-        onClick={props.onClick}
-        className={`arrow w-5 h-5 text-white bg ${
-          props.left ? "arrow--left" : "arrow--right"
-        } ${disabled}`}
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        color="#fff"
-      >
-        {props.left && (
-          <path
-            fill="#fff"
-            d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"
-          />
-        )}
-        {!props.left && (
-          <path fill="#fff" d="M5 3l3.057-3 11.943 12-11.943 12-3.057-3 9-9z" />
-        )}
-      </svg>
+      <div className="flex flex-col h-full">
+        <div className="flex-1 flex items-center justify-center">
+          <LoadingSpinner />
+        </div>
+      </div>
     );
   }
+
+  // Se não tiver dados de geolocalização
+  if (!geoData) {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-400 text-lg">
+              Não foi possível carregar os dados de localização
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Verifica se já foi feita alguma pesquisa
+  const hasPesquisa = filtro.estado !== "" && filtro.cidade !== "";
 
   return (
     <div className="flex flex-col h-full">
       {/* PARTE FIXA - Busca e Datas */}
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         {/* Busca */}
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_120px]">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_120px] pt-6">
           <div className="relative">
             <BiMap className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-xl text-gray-400" />
 
@@ -269,7 +355,7 @@ export default function ProgramacaoFiltro() {
                 setEstadoSelecionado(e.target.value);
                 setCidadeSelecionada("");
               }}
-              className="h-14 w-full appearance-none rounded-xl border border-gray-300 bg-white pl-12 pr-5 text-gray-700 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              className="h-14 w-full appearance-none rounded-xl border border-gray-300 bg-white pl-12 pr-10 text-gray-700 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500"
             >
               <option value="">Estado</option>
 
@@ -279,6 +365,22 @@ export default function ProgramacaoFiltro() {
                 </option>
               ))}
             </select>
+
+            {/* Setinha do select Estado */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <svg
+                className="h-5 w-5 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
           </div>
 
           <div className="relative">
@@ -288,7 +390,7 @@ export default function ProgramacaoFiltro() {
               value={cidadeSelecionada}
               onChange={(e) => setCidadeSelecionada(e.target.value)}
               disabled={!estadoSelecionado}
-              className="h-14 w-full appearance-none rounded-xl border border-gray-300 bg-white pl-12 pr-5 text-gray-700 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100"
+              className="h-14 w-full appearance-none rounded-xl border border-gray-300 bg-white pl-12 pr-10 text-gray-700 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:cursor-not-allowed disabled:bg-gray-100"
             >
               <option value="">Cidade</option>
 
@@ -298,22 +400,46 @@ export default function ProgramacaoFiltro() {
                 </option>
               ))}
             </select>
+
+            {/* Setinha do select Cidade */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+              <svg
+                className="h-5 w-5 text-gray-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                />
+              </svg>
+            </div>
           </div>
 
           <button
             onClick={handleBuscar}
-            disabled={!cidadeSelecionada || isFetching}
+            disabled={!cidadeSelecionada || isFetchingProgramacao}
             className="flex cursor-pointer h-14 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-semibold text-white transition hover:bg-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <HiOutlineSearch className="text-xl" />
-            {isFetching ? "Buscando..." : "Buscar"}
+            {isFetchingProgramacao ? (
+              <>
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                Buscando...
+              </>
+            ) : (
+              <>
+                <HiOutlineSearch className="text-xl" />
+                Buscar
+              </>
+            )}
           </button>
         </div>
 
-        {/* Datas */}
+        {/* Datas e Select Cinema */}
         {programacao && (
-          <div className="my-8">
-            <div className="w-full relative">
+          <div className="my-8 grid md:grid-cols-3 gap-4">
+            <div className="w-full relative md:col-span-2">
               <div ref={sliderRef} className="keen-slider w">
                 {datasOrdenadas.map((dataKey) => {
                   const dataFormatada = formatarData(dataKey);
@@ -321,11 +447,14 @@ export default function ProgramacaoFiltro() {
 
                   return (
                     <div
-                      className="keen-slider__slide overflow-visible! md:w-auto!"
+                      className="keen-slider__slide overflow-visible! w-auto!"
                       key={dataKey}
                     >
                       <button
-                        onClick={() => setDataSelecionada(dataKey)}
+                        onClick={() => {
+                          setDataSelecionada(dataKey);
+                          setCinemaSelecionado("");
+                        }}
                         className={`cursor-pointer flex flex-col items-center justify-center min-w-[80px] px-4 py-3 rounded-lg transition ${
                           isSelected
                             ? "bg-primary text-white"
@@ -346,25 +475,40 @@ export default function ProgramacaoFiltro() {
                   );
                 })}
               </div>
-              {loaded && instanceRef.current && (
-                <div className="absolute top-0 h-full flex items-center justify-between z-50 w-full">
-                  <Arrow
-                    left
-                    onClick={(e: any) =>
-                      e.stopPropagation() || instanceRef.current?.prev()
-                    }
-                    disabled={currentSlide === 0}
-                  />
+            </div>
 
-                  <Arrow
-                    onClick={(e: any) =>
-                      e.stopPropagation() || instanceRef.current?.next()
-                    }
-                    disabled={
-                      currentSlide ===
-                      instanceRef.current.track.details.slides.length - 1
-                    }
-                  />
+            <div className="md:col-span-1">
+              {/* Select para listar os cinemas em ordem alfabética */}
+              {cinemasPorData && Object.keys(cinemasPorData).length > 0 && (
+                <div className="relative">
+                  <select
+                    value={cinemaSelecionado}
+                    onChange={(e) => setCinemaSelecionado(e.target.value)}
+                    className="w-full appearance-none rounded-lg border border-white/10 bg-[#111317] px-4 py-3 pr-10 text-white focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="">Filtrar por cinemas</option>
+                    {listaCinemas.map((cinema) => (
+                      <option key={cinema.key} value={cinema.key}>
+                        {cinema.nome}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Setinha do select Cinema */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+                    <svg
+                      className="h-5 w-5"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
                 </div>
               )}
             </div>
@@ -373,13 +517,43 @@ export default function ProgramacaoFiltro() {
       </div>
 
       {/* PARTE ROLÁVEL - Programação */}
-      {programacao && (
+      {isFetchingProgramacao && !programacao ? (
+        // Loading enquanto busca a programação
+        <div className="flex-1 overflow-y-auto min-h-0 pt-7">
+          <div className="space-y-6 pb-6">
+            <CardLoadingSkeleton />
+            <CardLoadingSkeleton />
+          </div>
+        </div>
+      ) : programacao ? (
         <div className="flex-1 overflow-y-auto min-h-0">
           {/* Mostrar apenas as salas do dia selecionado */}
-          {dataSelecionada && cinemasPorData && (
+          {dataSelecionada && cinemasFiltrados && (
             <div className="space-y-6 pb-6">
-              {Object.entries(cinemasPorData).map(([cinemaKey, cinema]) => {
-                if (!cinema.SALAS || Object.keys(cinema.SALAS).length === 0) {
+              {Object.entries(cinemasFiltrados)
+                .sort(([, a], [, b]) =>
+                  a.CINEMA.localeCompare(b.CINEMA, "pt-BR"),
+                )
+                .map(([cinemaKey, cinema]) => {
+                  if (!cinema.SALAS || Object.keys(cinema.SALAS).length === 0) {
+                    return (
+                      <div
+                        key={cinemaKey}
+                        className="rounded-2xl border border-white/10 bg-[#111317] p-6"
+                      >
+                        <div className="mb-5 border-b border-white/10 pb-5">
+                          <h3 className="text-3xl font-semibold text-white">
+                            {cinema.CINEMA || "Cinema sem nome"}
+                          </h3>
+                          <p className="mt-2 text-gray-400">
+                            {cinema.CIDADE || ""}, {cinema.ESTADO || ""}
+                          </p>
+                        </div>
+                        <p className="text-gray-400">Nenhuma sala disponível</p>
+                      </div>
+                    );
+                  }
+
                   return (
                     <div
                       key={cinemaKey}
@@ -387,73 +561,61 @@ export default function ProgramacaoFiltro() {
                     >
                       <div className="mb-5 border-b border-white/10 pb-5">
                         <h3 className="text-3xl font-semibold text-white">
-                          {cinema.CINEMA || "Cinema sem nome"}
+                          {cinema.CINEMA}
                         </h3>
+
                         <p className="mt-2 text-gray-400">
-                          {cinema.CIDADE || ""}, {cinema.ESTADO || ""}
+                          {cinema.CIDADE}, {cinema.ESTADO}
                         </p>
                       </div>
-                      <p className="text-gray-400">Nenhuma sala disponível</p>
+
+                      <div className="space-y-8">
+                        {Object.entries(cinema.SALAS)
+                          .sort(([, a], [, b]) =>
+                            a.SALA.localeCompare(b.SALA, "pt-BR"),
+                          )
+                          .map(([salaKey, sala]) => (
+                            <div key={salaKey}>
+                              <div className="mb-4 flex flex-wrap items-center gap-3">
+                                <span className="text-xl font-semibold text-white">
+                                  {sala.SALA}
+                                </span>
+
+                                {sala.TIPO && (
+                                  <span className="rounded bg-gray-700 px-3 py-1 text-xs text-white">
+                                    {sala.TIPO}
+                                  </span>
+                                )}
+
+                                {sala.LEGENDA && (
+                                  <span className="rounded bg-gray-700 px-3 py-1 text-xs text-white">
+                                    {sala.LEGENDA}
+                                  </span>
+                                )}
+                              </div>
+
+                              <div className="flex flex-wrap gap-3">
+                                {sala.HORARIOS &&
+                                  sala.HORARIOS.sort((a, b) =>
+                                    a.HORARIO.localeCompare(b.HORARIO),
+                                  ).map((horario, index) => (
+                                    <a
+                                      key={index}
+                                      href={horario.URL_COMPRA}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="rounded-lg border border-primary hover:border-primary-dark px-6 py-3 text-lg font-semibold text-primary transition hover:bg-primary-dark hover:text-white"
+                                    >
+                                      {formatarHorario(horario.HORARIO)}
+                                    </a>
+                                  ))}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
                     </div>
                   );
-                }
-
-                return (
-                  <div
-                    key={cinemaKey}
-                    className="rounded-2xl border border-white/10 bg-[#111317] p-6"
-                  >
-                    <div className="mb-5 border-b border-white/10 pb-5">
-                      <h3 className="text-3xl font-semibold text-white">
-                        {cinema.CINEMA}
-                      </h3>
-
-                      <p className="mt-2 text-gray-400">
-                        {cinema.CIDADE}, {cinema.ESTADO}
-                      </p>
-                    </div>
-
-                    <div className="space-y-8">
-                      {Object.entries(cinema.SALAS).map(([salaKey, sala]) => (
-                        <div key={salaKey}>
-                          <div className="mb-4 flex flex-wrap items-center gap-3">
-                            <span className="text-xl font-semibold text-white">
-                              {sala.SALA}
-                            </span>
-
-                            {sala.TIPO && (
-                              <span className="rounded bg-gray-700 px-3 py-1 text-xs text-white">
-                                {sala.TIPO}
-                              </span>
-                            )}
-
-                            {sala.LEGENDA && (
-                              <span className="rounded bg-gray-700 px-3 py-1 text-xs text-white">
-                                {sala.LEGENDA}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex flex-wrap gap-3">
-                            {sala.HORARIOS &&
-                              sala.HORARIOS.map((horario, index) => (
-                                <a
-                                  key={index}
-                                  href={horario.URL_COMPRA}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="rounded-lg border border-primary hover:border-primary-dark px-6 py-3 text-lg font-semibold text-primary transition hover:bg-primary-dark hover:text-white"
-                                >
-                                  {horario.HORARIO}
-                                </a>
-                              ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
+                })}
             </div>
           )}
 
@@ -465,6 +627,11 @@ export default function ProgramacaoFiltro() {
               </p>
             </div>
           )}
+        </div>
+      ) : (
+        // Mostra o Video apenas quando NÃO houver pesquisa
+        <div className="flex-1 overflow-y-auto min-h-0 mt-8">
+          <Video />
         </div>
       )}
     </div>

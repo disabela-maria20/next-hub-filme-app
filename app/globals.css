@@ -14,4 +14,17 @@
 
   --color-background-primary: #090b0d;
   --color-border-primary: #131519;
+
+  /* Animação */
+  --animate-marquee: marquee 100s linear infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
 }

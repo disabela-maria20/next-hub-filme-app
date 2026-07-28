@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useLayoutEffect } from "react";
-import { Banner, Sessions } from "@/components";
+import { Banner, Footer, Sessions, Video } from "@/components";
 import useIsMobile from "@/hook/useIsMobile/isMobile";
 
 export default function Home() {
@@ -41,7 +41,7 @@ export default function Home() {
 
   return (
     <main
-      className={`bg-black p-1.5 ${isMobile ? "overflow-y-auto" : "overflow-hidden"}`}
+      className={`bg-black ${isMobile ? "overflow-y-auto" : "overflow-hidden"}`}
     >
       <div className="bg-background-primary rounded-2xl">
         <section
@@ -57,7 +57,7 @@ export default function Home() {
           />
 
           <div
-            className="flex-1 py-8 pr-12 h-full overflow-auto"
+            className="flex-1 md:py-8 px-3 md:pl-12 md:pr-12 h-full overflow-auto"
             style={{
               width: isMobile ? "100%" : `calc(100% - ${bannerWidth}px)`,
               minHeight: isMobile ? 400 : contentHeight,
@@ -78,8 +78,8 @@ export default function Home() {
           </div>
         </section>
 
-        <footer ref={footerRef} className="bg-green-200 p-4">
-          Rodapé
+        <footer ref={footerRef} className=" p-4">
+          <Footer />
         </footer>
       </div>
     </main>
