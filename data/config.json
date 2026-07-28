@@ -1,5 +1,21 @@
 {
-  "seo": {},
+  "seo": {
+    "title": "Acampamento Miasma",
+    "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma é entregue a uma jovem e entusiasta diretora para seu renascimento. Mas quando ela visita a estrela do filme original, uma atriz agora reclusa e envolta em mistério, as duas mulheres mergulham em um mundo de sangue, desejo, medo e delírio.",
+
+    "openGraph": {
+      "title": "Acampamento Miasma",
+      "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma retorna em um novo capítulo repleto de sangue, desejo, medo e delírio.",
+      "images": [
+        {
+          "url": "/img/og-image.jpg",
+          "width": 1200,
+          "height": 630,
+          "alt": "Pôster de Acampamento Miasma"
+        }
+      ]
+    }
+  },
   "code": "22744",
   "banner": {
     "mobile": "./img/poster-mobile.png",
