@@ -61,7 +61,7 @@ export default function Footer() {
                 key={index}
                 src={logo}
                 alt="Logo"
-                className="h-32 flex-shrink-0 transition-transform duration-300 hover:scale-110"
+                className="h-12 flex-shrink-0 transition-transform duration-300 hover:scale-110"
               />
             ))}
           </div>
@@ -71,7 +71,7 @@ export default function Footer() {
         <img
           src={config.rodape.bb}
           alt="Logo"
-          className="hidden w-1/2 md:flex"
+          className="hidden w-1/4 md:flex"
         />
 
         <button
