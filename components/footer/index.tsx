@@ -20,8 +20,8 @@ export default function Footer() {
       {/* Painel de acessibilidade */}
       <div
         className={`absolute bottom-full left-1/2 z-50 w-[95%] max-w-5xl -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${showAccessibility
-            ? "translate-y-0 opacity-100 visible"
-            : "translate-y-6 opacity-0 invisible"
+          ? "translate-y-0 opacity-100 visible"
+          : "translate-y-6 opacity-0 invisible"
           }`}
       >
         <div className="rounded-3xl border border-primary/20 bg-[#111317]/95 p-6 shadow-2xl backdrop-blur-xl">
@@ -70,7 +70,7 @@ export default function Footer() {
         <img
           src={config.rodape.bb}
           alt="Logo"
-          className="w-1/2 md:flex"
+          className="w-1/2 md:w-[200px]"
         />
 
         <button
