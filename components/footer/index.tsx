@@ -19,11 +19,10 @@ export default function Footer() {
     <footer className="relative w-full text-white">
       {/* Painel de acessibilidade */}
       <div
-        className={`absolute bottom-full left-1/2 z-50 w-[95%] max-w-5xl -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${
-          showAccessibility
+        className={`absolute bottom-full left-1/2 z-50 w-[95%] max-w-5xl -translate-x-1/2 transition-all duration-500 ease-[cubic-bezier(.22,1,.36,1)] ${showAccessibility
             ? "translate-y-0 opacity-100 visible"
             : "translate-y-6 opacity-0 invisible"
-        }`}
+          }`}
       >
         <div className="rounded-3xl border border-primary/20 bg-[#111317]/95 p-6 shadow-2xl backdrop-blur-xl">
           <p className="text-center text-[13px] leading-7 uppercase tracking-wide text-gray-300">
@@ -54,7 +53,7 @@ export default function Footer() {
         </p>
 
         {/* Mobile */}
-        <div className="w-full overflow-hidden md:hidden">
+        {/* <div className="w-full overflow-hidden md:hidden">
           <div className="flex w-max animate-marquee">
             {[...logos, ...logos].map((logo, index) => (
               <img
@@ -65,13 +64,13 @@ export default function Footer() {
               />
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Desktop */}
         <img
           src={config.rodape.bb}
           alt="Logo"
-          className="hidden w-1/2 md:flex"
+          className="w-1/2 md:flex"
         />
 
         <button
@@ -81,9 +80,8 @@ export default function Footer() {
           <span className="text-[14px]">Acessibilidade</span>
 
           <svg
-            className={`h-5 w-5 transition-transform duration-500 ${
-              showAccessibility ? "rotate-180" : ""
-            }`}
+            className={`h-5 w-5 transition-transform duration-500 ${showAccessibility ? "rotate-180" : ""
+              }`}
             fill="none"
             stroke="currentColor"
             strokeWidth={2}
