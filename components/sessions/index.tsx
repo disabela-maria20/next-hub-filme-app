@@ -521,11 +521,10 @@ export default function ProgramacaoFiltro() {
                             data_formatada: `${dataFormatada.diaSemana} ${dataFormatada.dia} ${dataFormatada.mes}`,
                           });
                         }}
-                        className={`cursor-pointer flex flex-col items-center justify-center min-w-[80px] px-4 py-3 rounded-lg transition ${
-                          isSelected
-                            ? "bg-primary text-white"
-                            : "bg-[#111317] text-white hover:bg-[#1a1d24] border border-white/10"
-                        }`}
+                        className={`cursor-pointer flex flex-col items-center justify-center min-w-[80px] px-4 py-3 rounded-lg transition ${isSelected
+                          ? "bg-primary text-white"
+                          : "bg-[#111317] text-white hover:bg-[#1a1d24] border border-white/10"
+                          }`}
                       >
                         <span className="text-xs font-medium uppercase tracking-wider">
                           {dataFormatada.diaSemana}
@@ -721,6 +720,70 @@ export default function ProgramacaoFiltro() {
         // Mostra o Video apenas quando NÃO houver pesquisa
         <div className="flex-1 overflow-y-auto min-h-0 mt-8">
           <Video />
+
+          <section className="mt-10 pb-10">
+            <div className="rounded-2xl border border-white/10 bg-[#111317] p-6 md:p-8 shadow-lg">
+
+              <div className="mb-8">
+                <span className="text-lg font-semibold  text-primary">
+                  Ficha técnica
+                </span>
+
+                <div className="mt-3 h-px w-full bg-white/10" />
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+                <div>
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Formato
+                  </p>
+                  <p className="text-base font-semibold text-white">
+                    {config.fichaTecnica.formato}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Gêneros
+                  </p>
+                  <p className="text-base font-semibold text-white">
+                    {config.fichaTecnica.generos.join(", ")}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
+                    Duração
+                  </p>
+                  <p className="text-base font-semibold text-white">
+                    {config.fichaTecnica.duracao}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
+                    País / Ano
+                  </p>
+                  <p className="text-base font-semibold text-white">
+                    {config.fichaTecnica.pais}, {config.fichaTecnica.ano}
+                  </p>
+                </div>
+
+              </div>
+
+              <div className="mt-8 border-t border-white/10 pt-8">
+                <h2 className="mb-4 text-xl font-semibold text-white">
+                  Sinopse
+                </h2>
+
+                <p className="max-w-4xl text-base leading-7 text-gray-400">
+                  {config.sinopse}
+                </p>
+              </div>
+
+            </div>
+          </section>
         </div>
       )}
     </div>

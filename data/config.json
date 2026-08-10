@@ -2,7 +2,6 @@
   "seo": {
     "title": "Acampamento Miasma",
     "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma é entregue a uma jovem e entusiasta diretora para seu renascimento. Mas quando ela visita a estrela do filme original, uma atriz agora reclusa e envolta em mistério, as duas mulheres mergulham em um mundo de sangue, desejo, medo e delírio.",
-
     "openGraph": {
       "title": "Acampamento Miasma",
       "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma retorna em um novo capítulo repleto de sangue, desejo, medo e delírio.",
@@ -16,15 +15,29 @@
       ]
     }
   },
+
   "code": "23689",
+
   "banner": {
     "mobile": "./img/poster-mobile.png",
     "desktop": "./img/poster-desktop.jpg"
   },
+
   "video": {
     "img": "./img/maxresdefault.jpg",
     "url": "https://www.youtube.com/embed/ol6BIre1lPo?si=QwJxhW-okDl3ZhRJ"
   },
+
+  "fichaTecnica": {
+    "formato": "Longa Metragem",
+    "generos": ["LGBTQ+", "Comédia", "Terror"],
+    "duracao": "112 min",
+    "pais": "Estados Unidos, Canadá",
+    "ano": "2026"
+  },
+
+  "sinopse": "Após anos de sequências desleixadas, a franquia Camp Miasma é entregue a uma jovem diretora entusiasmada para ser revitalizada. Mas ao visitar a estrela do filme original, hoje uma atriz reclusa e envolta em mistério, as duas mergulham em um mundo ensanguentado de desejo, medo e delírio.",
+
   "rodape": {
     "copy": "© 2026 RETRATO FILMES",
     "bb": "./img/bb.png"
