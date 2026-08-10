@@ -721,7 +721,7 @@ export default function ProgramacaoFiltro() {
         <div className="flex-1 overflow-y-auto min-h-0 mt-8">
           <Video />
 
-          <section className="mt-10 pb-10">
+          {/* <section className="mt-10 pb-10">
             <div className="rounded-2xl border border-white/10 bg-[#111317] p-6 md:p-8 shadow-lg">
 
               <div className="mb-8">
@@ -783,7 +783,7 @@ export default function ProgramacaoFiltro() {
               </div>
 
             </div>
-          </section>
+          </section> */}
         </div>
       )}
     </div>

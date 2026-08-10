@@ -1,31 +1,31 @@
 {
   "seo": {
-    "title": "Acampamento Miasma",
-    "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma é entregue a uma jovem e entusiasta diretora para seu renascimento. Mas quando ela visita a estrela do filme original, uma atriz agora reclusa e envolta em mistério, as duas mulheres mergulham em um mundo de sangue, desejo, medo e delírio.",
+    "title": "Nosso Segredo",
+    "description": "Uma família negra tenta reconstruir sua rotina após uma perda recente. Enquanto cada um foge do luto à sua maneira, o filho caçula guarda um segredo capaz de encarar as raízes de suas dores e, juntos, descobrirem um novo caminho.",
     "openGraph": {
-      "title": "Acampamento Miasma",
-      "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma retorna em um novo capítulo repleto de sangue, desejo, medo e delírio.",
+      "title": "Nosso Segredo",
+      "description": "Uma família negra tenta reconstruir sua rotina após uma perda recente. Enquanto cada um foge do luto à sua maneira, o filho caçula guarda um segredo capaz de encarar as raízes de suas dores e, juntos, descobrirem um novo caminho.",
       "images": [
         {
           "url": "./img/og-image.jpg",
           "width": 1200,
           "height": 630,
-          "alt": "Pôster de Acampamento Miasma"
+          "alt": "Pôster de Nosso Segredo"
         }
       ]
     }
   },
 
-  "code": "23689",
+  "code": "23696",
 
   "banner": {
     "mobile": "./img/poster-mobile.png",
-    "desktop": "./img/poster-desktop.jpg"
+    "desktop": "./img/poster-desktop.png"
   },
 
   "video": {
     "img": "./img/maxresdefault.jpg",
-    "url": "https://www.youtube.com/embed/ol6BIre1lPo?si=QwJxhW-okDl3ZhRJ"
+    "url": "https://www.youtube.com/embed/p_E7fhQ5EoI?si=vcdiJ6lxinJDrc0O"
   },
 
   "fichaTecnica": {
@@ -36,10 +36,10 @@
     "ano": "2026"
   },
 
-  "sinopse": "Após anos de sequências desleixadas, a franquia Camp Miasma é entregue a uma jovem diretora entusiasmada para ser revitalizada. Mas ao visitar a estrela do filme original, hoje uma atriz reclusa e envolta em mistério, as duas mergulham em um mundo ensanguentado de desejo, medo e delírio.",
+  "sinopse": "Uma família negra tenta reconstruir sua rotina após uma perda recente. Enquanto cada um foge do luto à sua maneira, o filho caçula guarda um segredo capaz de encarar as raízes de suas dores e, juntos, descobrirem um novo caminho.",
 
   "rodape": {
-    "copy": "© 2026 RETRATO FILMES",
+    "copy": "© 2026 SESSÃO VITRINE PETROBRAS",
     "bb": "./img/bb.png"
   }
 }

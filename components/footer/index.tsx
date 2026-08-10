@@ -70,7 +70,7 @@ export default function Footer() {
         <img
           src={config.rodape.bb}
           alt="Logo"
-          className="w-1/2 md:w-[200px]"
+          className="w-1/2 md:w-[580px]"
         />
 
         <button
