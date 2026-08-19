@@ -14,6 +14,7 @@ import "keen-slider/keen-slider.min.css";
 import React from "react";
 import Video from "../video";
 import config from "@/data/config.json";
+
 // Componente de Loading melhorado
 const LoadingSpinner = () => (
   <div className="flex flex-col items-center justify-center min-h-[200px] gap-4">
@@ -327,11 +328,14 @@ export default function ProgramacaoFiltro() {
     return Object.entries(cinemasPorData)
       .map(([key, cinema]) => ({
         key,
-        nome: cinema.CINEMA,
+        nome: cinema.CINEMA || "Cinema",
         cidade: cinema.CIDADE,
         estado: cinema.ESTADO,
       }))
-      .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      .filter((cinema) => cinema.nome)
+      .sort((a, b) =>
+        a.nome.localeCompare(b.nome, "pt-BR")
+      );
   }, [cinemasPorData]);
 
   // Filtrar cinemas pelo selecionado
@@ -606,9 +610,11 @@ export default function ProgramacaoFiltro() {
           {dataSelecionada && cinemasFiltrados && (
             <div className="space-y-6 pb-6">
               {Object.entries(cinemasFiltrados)
-                .sort(([, a], [, b]) =>
-                  a.CINEMA.localeCompare(b.CINEMA, "pt-BR"),
-                )
+                .sort(([, a], [, b]) => {
+                  const nomeA = a.CINEMA || "";
+                  const nomeB = b.CINEMA || "";
+                  return nomeA.localeCompare(nomeB, "pt-BR");
+                })
                 .map(([cinemaKey, cinema]) => {
                   if (!cinema.SALAS || Object.keys(cinema.SALAS).length === 0) {
                     return (
@@ -618,10 +624,20 @@ export default function ProgramacaoFiltro() {
                       >
                         <div className="mb-5 border-b border-white/10 pb-5">
                           <h3 className="text-3xl font-semibold text-white">
-                            {cinema.CINEMA || "Cinema sem nome"}
+                            {cinema.CINEMA || "Cinema"}
                           </h3>
                           <p className="mt-2 text-gray-400">
-                            {cinema.CIDADE || ""}, {cinema.ESTADO || ""}
+                            {cinema.ENDERECO && cinema.NUMERO && cinema.BAIRRO ? (
+                              <>
+                                {cinema.ENDERECO}, {cinema.NUMERO} - {cinema.BAIRRO}
+                                <br />
+                                {cinema.CIDADE || ""}, {cinema.ESTADO || ""}
+                              </>
+                            ) : (
+                              <>
+                                {cinema.CIDADE || ""}, {cinema.ESTADO || ""}
+                              </>
+                            )}
                           </p>
                         </div>
                         <p className="text-gray-400">Nenhuma sala disponível</p>
@@ -636,11 +652,21 @@ export default function ProgramacaoFiltro() {
                     >
                       <div className="mb-5 border-b border-white/10 pb-5">
                         <h3 className="text-3xl font-semibold text-white">
-                          {cinema.CINEMA}
+                          {cinema.CINEMA || "Cinema "}
                         </h3>
 
                         <p className="mt-2 text-gray-400">
-                          {cinema.CIDADE}, {cinema.ESTADO}
+                          {cinema.ENDERECO && cinema.NUMERO && cinema.BAIRRO ? (
+                            <>
+                              {cinema.ENDERECO}, {cinema.NUMERO} - {cinema.BAIRRO}
+                              <br />
+                              {cinema.CIDADE}, {cinema.ESTADO}
+                            </>
+                          ) : (
+                            <>
+                              {cinema.CIDADE}, {cinema.ESTADO}
+                            </>
+                          )}
                         </p>
                       </div>
 
@@ -685,7 +711,7 @@ export default function ProgramacaoFiltro() {
                                           "time",
                                           horario.HORARIO,
                                           {
-                                            cinema: cinema.CINEMA,
+                                            cinema: cinema.CINEMA || "Cinema",
                                             sala: sala.SALA,
                                             data: dataSelecionada,
                                             url_compra: horario.URL_COMPRA,
@@ -720,12 +746,10 @@ export default function ProgramacaoFiltro() {
         // Mostra o Video apenas quando NÃO houver pesquisa
         <div className="flex-1 overflow-y-auto min-h-0 mt-8">
           <Video />
-
-          <section className="mt-10 pb-10">
+          {config.fichaTecnica.mostrar && <section className="mt-10 pb-10">
             <div className="rounded-2xl border border-white/10 bg-[#111317] p-6 md:p-8 shadow-lg">
-
               <div className="mb-8">
-                <span className="text-lg font-semibold  text-primary">
+                <span className="text-lg font-semibold text-primary">
                   Ficha técnica
                 </span>
 
@@ -733,7 +757,6 @@ export default function ProgramacaoFiltro() {
               </div>
 
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-
                 <div>
                   <p className="mb-1 text-xs font-medium uppercase tracking-wider text-gray-500">
                     Formato
@@ -769,7 +792,6 @@ export default function ProgramacaoFiltro() {
                     {config.fichaTecnica.pais}, {config.fichaTecnica.ano}
                   </p>
                 </div>
-
               </div>
 
               <div className="mt-8 border-t border-white/10 pt-8">
@@ -781,9 +803,9 @@ export default function ProgramacaoFiltro() {
                   {config.sinopse}
                 </p>
               </div>
-
             </div>
-          </section>
+          </section>}
+
         </div>
       )}
     </div>

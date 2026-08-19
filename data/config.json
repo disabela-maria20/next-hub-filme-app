@@ -1,34 +1,35 @@
 {
   "seo": {
-    "title": "Acampamento Miasma",
-    "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma é entregue a uma jovem e entusiasta diretora para seu renascimento. Mas quando ela visita a estrela do filme original, uma atriz agora reclusa e envolta em mistério, as duas mulheres mergulham em um mundo de sangue, desejo, medo e delírio.",
+    "title": "Masha e os Ursos",
+    "description": "Baseado em contos infantis, \"Masha e os Ursos\", é uma adaptação dirigida por Antonina Ruzhe. No filme, a protagonista, Masha, precisa salvar seu irmão, que foi enfeitiçado e transformado em um bode. Para quebrar a terrível maldição, a menina precisa unir forças com os personagens de contos de fadas mais famosos da infância: os três ursos.",
     "openGraph": {
-      "title": "Acampamento Miasma",
-      "description": "Depois de anos de sequências desleixadas e um fandom em declínio, a franquia slasher Acampamento Miasma retorna em um novo capítulo repleto de sangue, desejo, medo e delírio.",
+      "title": "Masha e os Ursos",
+      "description": "Baseado em contos infantis, \"Masha e os Ursos\", é uma adaptação dirigida por Antonina Ruzhe. No filme, a protagonista, Masha, precisa salvar seu irmão, que foi enfeitiçado e transformado em um bode. Para quebrar a terrível maldição, a menina precisa unir forças com os personagens de contos de fadas mais famosos da infância: os três ursos.",
       "images": [
         {
-          "url": "./img/og-image.jpg",
+          "url": "./img/maxresdefault.jpg",
           "width": 1200,
           "height": 630,
-          "alt": "Pôster de Acampamento Miasma"
+          "alt": "Pôster de Masha e os Ursos"
         }
       ]
     }
   },
 
-  "code": "23689",
+  "code": "23508",
 
   "banner": {
-    "mobile": "./img/poster-mobile.png",
+    "mobile": "./img/poster-mobile.jpg",
     "desktop": "./img/poster-desktop.jpg"
   },
 
   "video": {
     "img": "./img/maxresdefault.jpg",
-    "url": "https://www.youtube.com/embed/ol6BIre1lPo?si=QwJxhW-okDl3ZhRJ"
+    "url": "https://www.youtube.com/embed/Y_DFY2PaTG4?si=2xQvwKFDvtnofkt8"
   },
 
   "fichaTecnica": {
+    "mostrar": false,
     "formato": "Longa Metragem",
     "generos": ["LGBTQ+", "Comédia", "Terror"],
     "duracao": "112 min",
@@ -36,7 +37,7 @@
     "ano": "2026"
   },
 
-  "sinopse": "Após anos de sequências desleixadas, a franquia Camp Miasma é entregue a uma jovem diretora entusiasmada para ser revitalizada. Mas ao visitar a estrela do filme original, hoje uma atriz reclusa e envolta em mistério, as duas mergulham em um mundo ensanguentado de desejo, medo e delírio.",
+  "sinopse": "Baseado em contos infantis, \"Masha e os Ursos\", é uma adaptação dirigida por Antonina Ruzhe. No filme, a protagonista, Masha, precisa salvar seu irmão, que foi enfeitiçado e transformado em um bode. Para quebrar a terrível maldição, a menina precisa unir forças com os personagens de contos de fadas mais famosos da infância: os três ursos.",
 
   "rodape": {
     "copy": "© 2026 RETRATO FILMES",

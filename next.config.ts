@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   output: "export",
   distDir: "build",
   trailingSlash: true,
-  basePath: "/acampamentomiasma",
-  assetPrefix: "/acampamentomiasma",
+  // basePath: "/mashaeosursos",
+  // assetPrefix: "/mashaeosursos",
 };
 
 export default nextConfig;
