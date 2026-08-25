@@ -22,6 +22,9 @@ export default function RootLayout({
       <html lang="pt-BR" className={`${openSans.variable} h-full antialiased`}>
         <body className="min-h-full flex flex-col">
           {/* Data Layer */}
+          {/* Adicionado "event" para permitir gatilho de Evento personalizado no GTM,
+              em vez de depender de "Janela carregada", que pode disparar antes do
+              GTM terminar de carregar em apps Next.js */}
           <Script id="data-layer" strategy="beforeInteractive">
             {`
               window.dataLayer = [{
@@ -30,6 +33,28 @@ export default function RootLayout({
                 content_type: "Microsite",
                 site_country: "BR",
               }];
+            `}
+          </Script>
+
+          {/* Google Tag Manager */}
+          {/* Movido para beforeInteractive: garante que o container do GTM seja
+              injetado e comece a escutar eventos (incluindo window.load) o mais
+              cedo possível, evitando perder o gatilho "Janela carregada" */}
+          <Script id="gtm" strategy="beforeInteractive">
+            {`
+              (function(w,d,s,l,i){
+                w[l]=w[l]||[];
+                w[l].push({
+                  'gtm.start': new Date().getTime(),
+                  event:'gtm.js'
+                });
+                var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),
+                    dl=l!='dataLayer'?'&l='+l:'';
+                j.async=true;
+                j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','GTM-PGNMWRJZ');
             `}
           </Script>
 
@@ -45,25 +70,6 @@ export default function RootLayout({
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
               gtag('config', 'G-CZYED2Y9QR');
-            `}
-          </Script>
-
-          {/* Google Tag Manager */}
-          <Script id="gtm" strategy="afterInteractive">
-            {`
-              (function(w,d,s,l,i){
-                w[l]=w[l]||[];
-                w[l].push({
-                  'gtm.start': new Date().getTime(),
-                  event:'gtm.js'
-                });
-                var f=d.getElementsByTagName(s)[0],
-                    j=d.createElement(s),
-                    dl=l!='dataLayer'?'&l='+l:'';
-                j.async=true;
-                j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-                f.parentNode.insertBefore(j,f);
-              })(window,document,'script','dataLayer','GTM-PGNMWRJZ');
             `}
           </Script>
 
