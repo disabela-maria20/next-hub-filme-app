@@ -1,22 +1,22 @@
 {
   "seo": {
-    "title": "Masha e os Ursos",
-    "description": "Baseado em contos infantis, \"Masha e os Ursos\", é uma adaptação dirigida por Antonina Ruzhe. No filme, a protagonista, Masha, precisa salvar seu irmão, que foi enfeitiçado e transformado em um bode. Para quebrar a terrível maldição, a menina precisa unir forças com os personagens de contos de fadas mais famosos da infância: os três ursos.",
+    "title": "Princesa e o Plebeu",
+    "description": "Para conquistar o coração da orgulhosa Princesa Carolina, o jovem Rei Benjamin se disfarça de jardineiro. Juntos, eles descobrem a encantadora flor cantante e partem em uma perigosa aventura para fugir do malvado mago Maximus.",
     "openGraph": {
-      "title": "Masha e os Ursos",
-      "description": "Baseado em contos infantis, \"Masha e os Ursos\", é uma adaptação dirigida por Antonina Ruzhe. No filme, a protagonista, Masha, precisa salvar seu irmão, que foi enfeitiçado e transformado em um bode. Para quebrar a terrível maldição, a menina precisa unir forças com os personagens de contos de fadas mais famosos da infância: os três ursos.",
+      "title": "Princesa e o Plebeu",
+      "description": "Para conquistar o coração da orgulhosa Princesa Carolina, o jovem Rei Benjamin se disfarça de jardineiro. Juntos, eles descobrem a encantadora flor cantante e partem em uma perigosa aventura para fugir do malvado mago Maximus.",
       "images": [
         {
           "url": "./img/maxresdefault.jpg",
           "width": 1200,
           "height": 630,
-          "alt": "Pôster de Masha e os Ursos"
+          "alt": "Pôster de Princesa e o Plebeu"
         }
       ]
     }
   },
 
-  "code": "23508",
+  "code": "23502",
 
   "banner": {
     "mobile": "./img/poster-mobile.jpg",
